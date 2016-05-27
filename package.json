@@ -1,0 +1,25 @@
+{
+  "name": "whiplash",
+  "version": "1.0.0",
+  "description": "Node.js module for the Whiplash API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/etano/whiplash-nodejs.git"
+  },
+  "keywords": [
+    "whiplash"
+  ],
+  "author": "Ethan Brown <ethan.w.brown@gmail.com> (https://ewb.io)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/etano/whiplash-nodejs/issues"
+  },
+  "homepage": "https://github.com/etano/whiplash-nodejs#readme",
+  "dependencies": {
+    "request": "^2.72.0"
+  }
+}
