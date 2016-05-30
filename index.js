@@ -138,12 +138,40 @@ class whiplash {
         });
     }
 
+    update(collection, access_token, filter, update) {
+        return this.request('PUT', collection, access_token, {
+            filter: filter,
+            update: update
+        });
+    }
+
     commit_one(collection, access_token, obj) {
         return this.request('POST', collection+'/one', access_token, obj);
     }
 
     submit(access_token, obj) {
         return this.request('GET', 'queries', access_token, obj);
+    }
+
+    distinct(collection, access_token, filter, field) {
+        return this.request('GET', collection+'/distinct', access_token, {
+            filter: filter,
+            field: field
+        });
+    }
+
+    count(collection, access_token, filter) {
+        return this.request('GET', collection+'/count', access_token, {
+            filter: filter
+        });
+    }
+
+    totals(collection, access_token, filter, target_field, sum_field) {
+        return this.request('GET', collection+'/totals', access_token, {
+            filter: filter,
+            target_field: target_field,
+            sum_field: sum_field
+        });
     }
 
 }
