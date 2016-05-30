@@ -1,6 +1,6 @@
 {
   "name": "project-whiplash",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Node.js module for the Whiplash API",
   "main": "index.js",
   "scripts": {
