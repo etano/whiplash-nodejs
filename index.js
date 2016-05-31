@@ -42,11 +42,78 @@ exports.get = function() {
     return state.api;
 };
 
+class Collection {
+    constructor(name, wdb) {
+        this.name = name;
+        this.wdb = wdb
+    }
+
+    query(filter, fields, access_token) {
+        return this.wdb.request('GET', this.name, {
+            filter: filter,
+            fields: fields
+        }, access_token);
+    }
+
+    query_one(filter, fields, access_token) {
+        return this.wdb.request('GET', this.name+'/one', {
+            filter: filter,
+            fields: fields
+        }, access_token);
+    }
+
+    update_one(filter, update, access_token) {
+        return this.wdb.request('PUT', this.name+'/one', {
+            filter: filter,
+            update: update
+        }, access_token);
+    }
+
+    update(filter, update, access_token) {
+        return this.wdb.request('PUT', this.name, {
+            filter: filter,
+            update: update
+        }, access_token);
+    }
+
+    commit_one(obj, access_token) {
+        return this.wdb.request('POST', this.name+'/one', obj, access_token);
+    }
+
+
+    distinct(filter, field, access_token) {
+        return this.wdb.request('GET', this.name+'/distinct', {
+            filter: filter,
+            field: field
+        }, access_token);
+    }
+
+    count(filter, access_token) {
+        return this.wdb.request('GET', this.name+'/count', {
+            filter: filter
+        }, access_token);
+    }
+
+    totals(filter, target_field, sum_field, access_token) {
+        return this.wdb.request('GET', this.name+'/totals', {
+            filter: filter,
+            target_field: target_field,
+            sum_field: sum_field
+        }, access_token);
+    }
+}
+
 class whiplash {
     constructor(host, port, admin_access_token) {
         this.host = host;
         this.port = port;
         this.admin_access_token = admin_access_token;
+        this.models = new Collection("models", this);
+        this.properties = new Collection("properties", this);
+        this.executables = new Collection("executables", this);
+        this.sets = new Collection("sets", this);
+        this.users = new Collection("users", this);
+        this.clients = new Collection("clients", this);
     }
 
     create_token(username, password, client_id, client_secret) {
@@ -89,10 +156,12 @@ class whiplash {
             client_secret: client_secret,
             owner: user_id
         };
-        return this.commit_one("clients", this.admin_access_token, client);
+        return this.clients.commit_one(client);
     }
 
-    request(protocol, path, access_token, payload) {
+    request(protocol, path, payload, access_token) {
+        if (!access_token)
+            access_token = this.admin_access_token;
         var options = {
             uri: 'http://'+this.host+':'+this.port+'/api/'+path, // TODO: make https
             method: protocol,
@@ -117,61 +186,10 @@ class whiplash {
         });
     }
 
-    query(collection, access_token, filter, fields) {
-        return this.request('GET', collection, access_token, {
-            filter: filter,
-            fields: fields
-        });
-    }
-
-    query_one(collection, access_token, filter, fields) {
-        return this.request('GET', collection+'/one', access_token, {
-            filter: filter,
-            fields: fields
-        });
-    }
-
-    update_one(collection, access_token, filter, update) {
-        return this.request('PUT', collection+'/one', access_token, {
-            filter: filter,
-            update: update
-        });
-    }
-
-    update(collection, access_token, filter, update) {
-        return this.request('PUT', collection, access_token, {
-            filter: filter,
-            update: update
-        });
-    }
-
-    commit_one(collection, access_token, obj) {
-        return this.request('POST', collection+'/one', access_token, obj);
-    }
-
-    submit(access_token, obj) {
-        return this.request('GET', 'queries', access_token, obj);
-    }
-
-    distinct(collection, access_token, filter, field) {
-        return this.request('GET', collection+'/distinct', access_token, {
-            filter: filter,
-            field: field
-        });
-    }
-
-    count(collection, access_token, filter) {
-        return this.request('GET', collection+'/count', access_token, {
-            filter: filter
-        });
-    }
-
-    totals(collection, access_token, filter, target_field, sum_field) {
-        return this.request('GET', collection+'/totals', access_token, {
-            filter: filter,
-            target_field: target_field,
-            sum_field: sum_field
-        });
+    query(obj, access_token) {
+        return this.request('GET', 'queries', obj, access_token);
     }
 
 }
+
+
