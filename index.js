@@ -12,7 +12,8 @@ exports.connect = function(options, done) {
 
     var host = options.host;
     var port = options.port;
-    var admin_client = options.admin_client;
+    var admin_client_id = options.admin_client_id;
+    var admin_client_secret = options.admin_client_secret;
     var admin_access_token = options.admin_access_token;
     var admin_password = options.admin_password;
 
@@ -20,8 +21,10 @@ exports.connect = function(options, done) {
     if (!admin_access_token) {
         if (!admin_password)
             admin_password = "password";
+        if (!admin_client_secret)
+            admin_client_secret = admin_password;
         console.log("Creating new whiplash admin token!");
-        wdb.create_token('admin', admin_password, admin_client, admin_password).then(function(access_token) { // FIXME: client_secret same as password
+        wdb.create_token('admin', admin_password, admin_client_id, admin_client_secret).then(function(access_token) {
             wdb.admin_access_token = access_token;
             state.api = wdb;
             console.log("Connected to whiplash!");
