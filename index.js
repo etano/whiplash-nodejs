@@ -83,6 +83,9 @@ class Collection {
         return this.wdb.request('POST', this.name+'/one', obj, access_token);
     }
 
+    delete(filter, access_token) {
+        return this.wdb.request('DELETE', this.name, filter, access_token);
+    }
 
     distinct(filter, field, access_token) {
         return this.wdb.request('GET', this.name+'/distinct', {
@@ -193,6 +196,12 @@ class whiplash {
         return this.request('GET', 'queries', obj, access_token);
     }
 
-}
+    submit(obj, access_token) {
+        return this.request('POST', 'queries', obj, access_token);
+    }
 
+    status(obj, access_token) {
+        return this.request('GET', 'queries/status', obj, access_token);
+    }
+}
 
