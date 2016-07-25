@@ -34,7 +34,7 @@ exports.connect = function(options, done) {
         if (!admin_client_secret)
             admin_client_secret = admin_password;
         console.log("Creating new whiplash admin token!");
-        setInterval(function() {
+        var interval = setInterval(function() {
             if (try_connect(wdb, admin_password, admin_client_id, admin_client_secret)) {
                 clearInterval(interval);
                 state.api = wdb;
