@@ -4,6 +4,16 @@ var state = {
     api: null,
 };
 
+function try_connect(wdb, admin_password, admin_client_id, admin_client_secret) {
+    wdb.create_token('admin', admin_password, admin_client_id, admin_client_secret).then(function(access_token) {
+        wdb.admin_access_token = access_token;
+        return true;
+    }).catch(function(err) {
+        console.log(err);
+        return false;
+    });
+}
+
 exports.connect = function(options, done) {
     if (state.api) {
         console.log("Already connected to whiplash!");
@@ -24,16 +34,14 @@ exports.connect = function(options, done) {
         if (!admin_client_secret)
             admin_client_secret = admin_password;
         console.log("Creating new whiplash admin token!");
-        wdb.create_token('admin', admin_password, admin_client_id, admin_client_secret).then(function(access_token) {
-            wdb.admin_access_token = access_token;
-            state.api = wdb;
-            console.log("Connected to whiplash!");
-            done();
-        }).catch(function(err) {
+        var connected = false;
+        while (!try_connect(wdb, admin_password, admin_client_id, admin_client_secret)) {
             console.log("Trouble connecting to whiplash!");
-            console.log(err);
-            done(err);
-        })
+            sleep(1);
+        }
+        state.api = wdb;
+        console.log("Connected to whiplash!");
+        done();
     } else {
         state.api = wdb;
         console.log("Connected to whiplash!");
