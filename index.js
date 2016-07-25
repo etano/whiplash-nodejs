@@ -5,7 +5,7 @@ var state = {
 };
 
 function try_connect(wdb, admin_password, admin_client_id, admin_client_secret) {
-    wdb.create_token('admin', admin_password, admin_client_id, admin_client_secret).then(function(access_token) {
+    return wdb.create_token('admin', admin_password, admin_client_id, admin_client_secret).then(function(access_token) {
         wdb.admin_access_token = access_token;
         return true;
     }).catch(function(err) {
