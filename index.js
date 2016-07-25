@@ -34,15 +34,17 @@ exports.connect = function(options, done) {
         if (!admin_client_secret)
             admin_client_secret = admin_password;
         console.log("Creating new whiplash admin token!");
-        var connected = false;
-        while (!try_connect(wdb, admin_password, admin_client_id, admin_client_secret)) {
-            setTimeout(function() {
+        setInterval(function() {
+            if (try_connect(wdb, admin_password, admin_client_id, admin_client_secret)) {
+                clearInterval(interval);
+                state.api = wdb;
+                console.log("Connected to whiplash!");
+                done();
+            } else {
                 console.log("Trouble connecting to whiplash!");
-            }, 1000);
-        }
-        state.api = wdb;
-        console.log("Connected to whiplash!");
-        done();
+                console.log("Trying again.");
+            }
+        }, 1000);
     } else {
         state.api = wdb;
         console.log("Connected to whiplash!");
