@@ -36,8 +36,9 @@ exports.connect = function(options, done) {
         console.log("Creating new whiplash admin token!");
         var connected = false;
         while (!try_connect(wdb, admin_password, admin_client_id, admin_client_secret)) {
-            console.log("Trouble connecting to whiplash!");
-            sleep(1);
+            setTimeout(function() {
+                console.log("Trouble connecting to whiplash!");
+            }, 1000);
         }
         state.api = wdb;
         console.log("Connected to whiplash!");
